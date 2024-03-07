@@ -1,0 +1,19 @@
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+@page "/readonly"
+
+<h3>LuckyNumber: @LuckyNumber</h3>
+
+@code {
+    public int LuckyNumber { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await ProtectedSessionStore.GetAsync<int>("luckyNumber");
+        if (result.Success)
+        {
+            LuckyNumber = result.Value;
+        }
+    }
+}

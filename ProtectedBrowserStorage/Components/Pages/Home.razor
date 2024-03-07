@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+@page "/"
+
+<PageTitle>Protected Browser Storage in Blazor Server</PageTitle>
+
+<p>Generate your lucky number!</p>
+<button type="button" @onclick="Generate">Generate</button>
+
+Your lucky number is: @LuckyNumber
+
+@code {
+    public int LuckyNumber { get; set; }
+    private Random _random = new Random();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await ProtectedSessionStore.GetAsync<int>("luckyNumber");
+        if (result.Success)
+        {
+            LuckyNumber = result.Value;
+        }
+    }
+
+    public async Task Generate()
+    {
+        LuckyNumber = _random.Next(1, 99);
+        await ProtectedSessionStore.SetAsync("luckyNumber", LuckyNumber);
+    }
+}
